@@ -13,22 +13,22 @@ data_file = "criterion_level_data.test.json"
     [[criterions.criterion]]
     index = 1
     name = "基本信息"
-    data = "cri.1"
+    rname = "cri.1"
     childs = [1,2,3,4]
     [[criterions.criterion]]
     index = 2
     name = "交易信息"
-    data = "cri.2"
+    rname = "cri.2"
     childs = [5,6,7,8,9]
     [[criterions.criterion]]
     index = 3
     name = "产品因素"
-    data = "cri.3"
+    rname = "cri.3"
     childs = [10,11,12,13]
     [[criterions.criterion]]
     index = 4
     name = "物流因素"
-    data = "cri.4"
+    rname = "cri.4"
     childs = [14,15,16,17,18]
 
 # 指标层配置.
@@ -39,74 +39,74 @@ data_file = "index_level_data.test.json"
     [[indices.index]]
     index = 1
     name = "商家规模"
-    data = "ind.1"
+    rname = "ind.1"
     [[indices.index]]
     index = 2
     name = "商家知名度"
-    data = "ind.2"
+    rname = "ind.2"
     [[indices.index]]
     index = 3
     name = "经营资质"
-    data = "ind.3"
+    rname = "ind.3"
     [[indices.index]]
     index = 4
     name = "经营历史"
-    data = "ind.4"
+    rname = "ind.4"
     [[indices.index]]
     index = 5
     name = "被处罚次数"
-    data = "ind.5"
+    rname = "ind.5"
     [[indices.index]]
     index = 6
     name = "投诉率"
-    data = "ind.6"
+    rname = "ind.6"
     [[indices.index]]
     index = 7
     name = "退款率"
-    data = "ind.7"
+    rname = "ind.7"
     [[indices.index]]
     index = 8
     name = "退款速度"
-    data = "ind.8"
+    rname = "ind.8"
     [[indices.index]]
     index = 9
     name = "商品质量"
-    data = "ind.9"
+    rname = "ind.9"
     [[indices.index]]
     index = 10
     name = "商品相符度"
-    data = "ind.10"
+    rname = "ind.10"
     [[indices.index]]
     index = 11
     name = "售后服务"
-    data = "ind.11"
+    rname = "ind.11"
     [[indices.index]]
     index = 12
     name = "承诺兑现度"
-    data = "ind.12"
+    rname = "ind.12"
     [[indices.index]]
     index = 13
     name = "反馈及时性"
-    data = "ind.13"
+    rname = "ind.13"
     [[indices.index]]
     index = 14
     name = "发货速度"
-    data = "ind.14"
+    rname = "ind.14"
     [[indices.index]]
     index = 15
     name = "发货正确性"
-    data = "ind.15"
+    rname = "ind.15"
     [[indices.index]]
     index = 16
     name = "到货时长"
-    data = "ind.16"
+    rname = "ind.16"
     [[indices.index]]
     index = 17
     name = "配送地点准确性"
-    data = "17"
+    rname = "17"
     [[indices.index]]
     index = 18
     name = "包装完整性"
-    data = "ind.18"
+    rname = "ind.18"
 
 
