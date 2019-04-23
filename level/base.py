@@ -190,26 +190,17 @@ class BaseLevelMatrix:
             # 遍历矩阵内元素
             for j in range(len(self.matrix[i])):
                 for k in range(len(self.matrix[i][j])):
-<<<<<<< Updated upstream
                     if k == j + 1:
                         self.fix_matrix[i][j][k] = self.matrix[i][j][k]
                     elif k > j + 1:
                         for t in range(j + 1, k - 1):
-                            m1 = m1 * pow(self.matrix[i][j][t].membership * self.matrix[i][t][k].membership,
-                                          1 / (j - i - 1))
-                            m2 = m2 * pow((1 - self.matrix[i][j][t].membership) * (1 - self.matrix[i][t][k].membership),
-                                          1 / (j - i - 1))
-                            nm1 = nm1 * pow(self.matrix[i][j][t].non_membership * self.matrix[i][t][k].membership,
-                                            1 / (j - i - 1))
-                            nm2 = nm1 * pow(
-                                (1 - self.matrix[i][j][t].non_membership) * (1 - self.matrix[i][t][k].non_membership),
-                                1 / (j - i - 1))
+                            m1 = m1 * pow(self.matrix[i][j][t].membership * self.matrix[i][t][k].membership,1 / (j - i - 1))
+                            m2 = m2 * pow((1 - self.matrix[i][j][t].membership) * (1 - self.matrix[i][t][k].membership),1 / (j - i - 1))
+                            nm1 = nm1 * pow(self.matrix[i][j][t].non_membership * self.matrix[i][t][k].membership,1 / (j - i - 1))
+                            nm2 = nm1 * pow((1 - self.matrix[i][j][t].non_membership) * (1 - self.matrix[i][t][k].non_membership),1 / (j - i - 1))
                             self.fix_matrix[i][j][k].membership = m1 / (m1 + m2)
                             self.fix_matrix[i][j][k].non_membership = nm1 / (nm1 + nm2)
-                            self.fix_matrix[i][j][k].hesitation = (
-                                        1 - self.fix_matrix[i][j][k].membership - self.fix_matrix[i][j][
-                                    k].non_membership)
-=======
+                            self.fix_matrix[i][j][k].hesitation = (1 - self.fix_matrix[i][j][k].membership - self.fix_matrix[i][j][k].non_membership)
                     if k == j+1:
                         self.fix_matrix[i][j][k] = self.matrix[i][j][k]
                     elif k>j+1:
@@ -221,7 +212,6 @@ class BaseLevelMatrix:
                             self.fix_matrix[i][j][k].membership = m1/(m1+m2)
                             self.fix_matrix[i][j][k].non_membership = nm1/(nm1+nm2)
                             self.fix_matrix[i][j][k].hesitation = (1-self.fix_matrix[i][j][k].membership-self.fix_matrix[i][j][k].non_membership)
->>>>>>> Stashed changes
                     else:
                         self.fix_matrix[i][j][k].membership = 0.5
                         self.fix_matrix[i][j][k].non_membership = 0.5
