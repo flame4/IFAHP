@@ -103,6 +103,15 @@ class BaseLevelMatrix:
         self.name = "unknown"
         self.group_id = -1
 
+    # 有个问题！一致性检查过程：(第一次和后面几次检查一致性的两个矩阵不相同，建议函数入口传入两个矩阵参数方便后面调用)
+    # step 1 : check_consistency(matrix , fix_matrix)
+    #          if 满足一致性 : stop
+    #          else : step 2
+    # step 2 : calc_define_matrix(alpha-0.01)
+    # step 3 : check_consistency(matrix , refine_matrix)
+    #          if 满足一致性：stop
+    #          else : go to step 2
+
     # 检查自己的matrix
     def check_consistency(self) -> bool:
         # 一致性检查必须在由原始数据计算得到一致性判断矩阵之后，才能进行
@@ -181,6 +190,7 @@ class BaseLevelMatrix:
             # 遍历矩阵内元素
             for j in range(len(self.matrix[i])):
                 for k in range(len(self.matrix[i][j])):
+<<<<<<< Updated upstream
                     if k == j + 1:
                         self.fix_matrix[i][j][k] = self.matrix[i][j][k]
                     elif k > j + 1:
@@ -199,6 +209,19 @@ class BaseLevelMatrix:
                             self.fix_matrix[i][j][k].hesitation = (
                                         1 - self.fix_matrix[i][j][k].membership - self.fix_matrix[i][j][
                                     k].non_membership)
+=======
+                    if k == j+1:
+                        self.fix_matrix[i][j][k] = self.matrix[i][j][k]
+                    elif k>j+1:
+                        for t in range(j+1,k-1):
+                            m1 = m1*pow(self.matrix[i][j][t].membership * self.matrix[i][t][k].membership,1/(j-i-1))
+                            m2 = m2*pow((1-self.matrix[i][j][t].membership) * (1-self.matrix[i][t][k].membership),1/(j-i-1))
+                            nm1 = nm1*pow(self.matrix[i][j][t].non_membership * self.matrix[i][t][k].membership,1/(j-i-1))
+                            nm2 = nm1*pow((1-self.matrix[i][j][t].non_membership) * (1-self.matrix[i][t][k].non_membership),1/(j-i-1))
+                            self.fix_matrix[i][j][k].membership = m1/(m1+m2)
+                            self.fix_matrix[i][j][k].non_membership = nm1/(nm1+nm2)
+                            self.fix_matrix[i][j][k].hesitation = (1-self.fix_matrix[i][j][k].membership-self.fix_matrix[i][j][k].non_membership)
+>>>>>>> Stashed changes
                     else:
                         self.fix_matrix[i][j][k].membership = 0.5
                         self.fix_matrix[i][j][k].non_membership = 0.5
@@ -206,9 +229,20 @@ class BaseLevelMatrix:
         return True
 
     def _calc_refined_matrix(self) -> bool:
-        while self.alpha < 1:
+        while 0 <= self.alpha <= 1:
+            self.alpha -= 0.01
+            for i in range(len(self.matrix)):
+                # 遍历矩阵内元素
+                for j in range(len(self.matrix[i])):
+                    for k in range(len(self.matrix[i][j])):
+                        refine_m1 = pow(self.matrix[i][j][k].membership,(1-self.alpha)) * pow(self.fix_matrix[i][j][k].membership , self.alpha)
+                        refine_m2 = pow((1-self.matrix[i][j][k].membership),(1-self.alpha)) * pow((1-self.fix_matrix[i][j][k].membership) , self.alpha)
+                        refine_nm1 = pow(self.matrix[i][j][k].non_membership,(1-self.alpha)) * pow(self.fix_matrix[i][j][k].non_membership , self.alpha)
+                        refine_nm2 = pow((1-self.matrix[i][j][k].non_membership),(1-self.alpha)) * pow((1-self.fix_matrix[i][j][k].non_membership) , self.alpha)
+                        refine_m =  refine_m1/(refine_m1+refine_m2)
+                        refine_nm = refine_nm1 / (refine_nm1 + refine_nm2)
+            # 注意！check_consistency()内容是matrix与fix_matrix的计算，此处应该为matrix与refine_matrix的计算,应作修改
             if self.check_consistency():
                 self.consistancy = True
                 return True
-            self.alpha += self.delta
         return False
