@@ -273,10 +273,9 @@ class BaseLevelMatrix:
                             self.fix_matrix[i][j][k].non_membership, self.alpha)
                         refine_nm2 = pow((1 - self.matrix[i][j][k].non_membership), (1 - self.alpha)) * pow(
                             (1 - self.fix_matrix[i][j][k].non_membership), self.alpha)
-                        refine_m = refine_m1 / (refine_m1 + refine_m2)
-                        refine_nm = refine_nm1 / (refine_nm1 + refine_nm2)
-            # 注意！check_consistency()内容是matrix与fix_matrix的计算，此处应该为matrix与refine_matrix的计算,应作修改
-            if self.check_consistency(self.matrix[0], self.refined_matrix[0]):
-                self.consistancy = True
-                return True
+                        self.refined_matrix[i][j][k].membership = refine_m1 / (refine_m1 + refine_m2)
+                        self.refined_matrix[i][j][k].non_membership = refine_nm1 / (refine_nm1 + refine_nm2)
+                        self.refined_matrix[i][j][k].hesitation = 1-self.refined_matrix[i][j][k].membership-self.refined_matrix[i][j][k].non_membership
+                # 注意！check_consistency()内容是matrix与fix_matrix的计算，此处应该为matrix与refine_matrix的计算,应作修改
+                return self.check_consistency(self.matrix[i], self.refined_matrix[i])
         return False
