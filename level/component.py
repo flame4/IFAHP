@@ -102,7 +102,7 @@ class BaseLevelMatrix:
     refined_matrix: List[List[List[RelationNode]]]
 
     #   最终的权重矩阵, 在计算好refined matrix之后就可以被计算出来.
-    weight_list: List[Tuple[float, float]]
+    weight_list: List[List[Tuple[float, float]]]
 
     # conf, toml的解析对象, 方便随时读取.
     conf: Any
@@ -315,4 +315,21 @@ class BaseLevelMatrix:
         return True
 
     def calc_weight_list(self) -> bool:
+        s1, s2, m, nm = 0, 0, 0, 0
+        M, NM = [],[]
+        for group_id in range(len(self.refined_matrix)):
+            self.weight_list.append([])
+            for i in range(len(self.refined_matrix[group_id])):
+                self.weight_list[group_id].append([])
+                for j in range(len(self.refined_matrix[group_id][i])):
+                    m += self.refined_matrix[group_id][i][j].membership
+                    nm += (1-self.refined_matrix[group_id][i][j].non_membership)
+                    s1 += m
+                    s2 += nm
+                M.append(m)
+                NM.append(nm)
+                nm, m = 0, 0
+        for group_id in range(len(self.weight_list)):
+            for i in range(len(self.weight_list[group_id])):
+                self.weight_list[group_id][i]=((M[i]/s2), (1-(NM[i]/s1)))
         return True
