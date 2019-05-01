@@ -30,8 +30,8 @@ class Node:
         self.bad = 0
         self.unknown = 0
 
-    def __format__(self, format_spec: str) -> str:
-        return "{}: ({} {} {})".format(self.name, self.membership, self.non_membership, self.hesitation)
+    def __repr__(self) -> str:
+        return "{}: ({:.4f} {:.4f} {:.4f})".format(self.name, self.membership, self.non_membership, self.hesitation)
 
     def from_vec(self, vec: List[float]):
         self.membership, self.non_membership, self.hesitation = vec
@@ -124,7 +124,7 @@ class BaseLevelMatrix:
         self.refined_matrix = []
         self.conf = None
         self.data = None
-        self.alpha = -1
+        self.alpha = []
         self.delta = 0.01
         self.name = "unknown"
 
@@ -250,26 +250,33 @@ class BaseLevelMatrix:
                     if j == i + 1:
                         self.fix_matrix[group_id][i][j].from_vec(self.matrix[group_id][i][j].into_vec())
                     elif j > i + 1:
-                        for t in range(i + 1, j - 1):
-                            m1 = m1 * pow(
+                        for t in range(i + 1, j):
+                            m1 *= pow(
                                 self.matrix[group_id][i][t].membership * self.matrix[group_id][t][j].membership,
-                                1 / (i - group_id - 1))
-                            m2 = m2 * pow((1 - self.matrix[group_id][i][t].membership) * (
+                                1 / (j - i - 1))
+                            m2 *= pow((1 - self.matrix[group_id][i][t].membership) * (
                                     1 - self.matrix[group_id][t][j].membership),
-                                          1 / (i - group_id - 1))
-                            nm1 = nm1 * pow(
-                                self.matrix[group_id][i][t].non_membership * self.matrix[group_id][t][j].membership,
-                                1 / (i - group_id - 1))
-                            nm2 = nm1 * pow(
+                                          1 / (j-i - 1))
+                            nm1 *= pow(
+                                self.matrix[group_id][i][t].non_membership * self.matrix[group_id][t][j].non_membership,
+                                1 / (j - i - 1))
+                            nm2 *= pow(
                                 (1 - self.matrix[group_id][i][t].non_membership) * (
                                         1 - self.matrix[group_id][t][j].non_membership),
-                                1 / (i - group_id - 1))
+                                1 / (j - i - 1))
 
-                            self.fix_matrix[group_id][i][j].from_vec([
-                                m1 / (m1 + m2),
-                                nm1 / (nm1 + nm2),
-                                1 - m1 / (m1 + m2) - nm1 / (nm1 + nm2)
-                            ])
+                        self.fix_matrix[group_id][i][j].from_vec([
+                            m1 / (m1 + m2),
+                            nm1 / (nm1 + nm2),
+                            1 - m1 / (m1 + m2) - nm1 / (nm1 + nm2)
+                        ])
+                        m1,m2,nm1,nm2=1,1,1,1
+                    elif j < i:
+                        self.fix_matrix[group_id][i][j].from_vec([
+                            self.fix_matrix[group_id][j][i].non_membership,
+                            self.fix_matrix[group_id][j][i].membership,
+                            1-self.fix_matrix[group_id][j][i].non_membership-self.fix_matrix[group_id][j][i].membership
+                        ])
                     else:
                         self.fix_matrix[group_id][i][j].from_vec([0.5, 0.5, 0])
         return True
@@ -307,7 +314,7 @@ class BaseLevelMatrix:
                         ])
                 if self.check_consistency(self.matrix[group_id], self.refined_matrix[group_id])[0]:
                     break
-                self.alpha[group_id] -= 0.01
+                self.alpha[group_id] -= self.delta
 
             assert self.alpha[group_id] >= 0, "Refine Matrix Error, Can't refine it! alpha = %.4f, group id = %d " \
                                               % (self.alpha[group_id], group_id)

@@ -35,7 +35,8 @@ class CriterionLevelTest(unittest.TestCase):
                 name = self.m.fix_matrix[0][i][j].name
                 actual_val = self.m.fix_matrix[0][i][j].into_vec()
                 theory_val = self.m.data["fix_matrix"][name]
-                self.assertEqual(actual_val[0:2], theory_val[0:2])
+                self.assertAlmostEqual(actual_val[0], theory_val[0], places=4)
+                self.assertAlmostEqual(actual_val[1], theory_val[1], places=4)
 
     def test_check_consistency(self):
         if len(self.m.fix_matrix) == 0:
@@ -43,20 +44,21 @@ class CriterionLevelTest(unittest.TestCase):
 
         ret = self.m.check_consistency(self.m.matrix[0], self.m.fix_matrix[0])
         self.assertEqual(ret[0], False)
-        self.assertAlmostEqual(ret[1], 0.2608)
+        self.assertAlmostEqual(ret[1], 0.2608, places=4)
 
     def test_refine_matrix(self):
         if len(self.m.fix_matrix) == 0:
             self.m.calc_fix_matrix()
 
         self.assertEqual(self.m.calc_refined_matrix(), True)
-        self.assertAlmostEqual(self.m.alpha, 0.33, places=2)
+        self.assertAlmostEqual(self.m.alpha[0], 0.33, places=2)
         ret = self.m.check_consistency(self.m.matrix[0], self.m.refined_matrix[0])
         self.assertEqual(ret[0], True)
-        self.assertAlmostEqual(ret[1], 0.09996)
+        self.assertAlmostEqual(ret[1], 0.09996, places=4)
         for i in range(len(self.m.matrix[0])):
             for j in range(len(self.m.refined_matrix[0])):
                 name = self.m.refined_matrix[0][i][j].name
                 actual_val = self.m.refined_matrix[0][i][j].into_vec()
                 theory_val = self.m.data["refine_matrix"][name]
-                self.assertEqual(actual_val[0:2], theory_val[0:2])
+                self.assertAlmostEqual(actual_val[0], theory_val[0], places=4)
+                self.assertAlmostEqual(actual_val[1], theory_val[1], places=4)
