@@ -58,7 +58,7 @@ class Framework:
 
     def __repr__(self):
         def final_result_calc(arg: Tuple[float, float]) -> float:
-            return 0.5 * (1 + 1 - arg[0] - arg[1]) * (1 - arg[0])
+            return (1 - arg[1]) / (1 + 1 - arg[0] - arg[1])
 
         ret = " ============ \n"
         ret += " Level 0 weight = {} \n".format("{}".format(self.final_weight))
