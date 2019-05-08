@@ -1,7 +1,8 @@
 from level.target_level_matrix import TargetLeveLMatrix
 from level.criterion_level_matrix import CriterionLevelMatrix
 from level.index_level_matrix import IndexLevelMatrix
-from typing import Tuple
+from typing import Tuple, List
+from level.component import RelationNode
 from level import util
 from functools import reduce
 
@@ -60,10 +61,26 @@ class Framework:
         def final_result_calc(arg: Tuple[float, float]) -> float:
             return (1 - arg[1]) / (1 + 1 - arg[0] - arg[1])
 
-        ret = " ============ \n"
-        ret += " Level 0 weight = {} \n".format("{}".format(self.final_weight))
-        ret += " Level 1 Weight = {} \n".format("{}".format(self.criterion_level.weight_list))
-        ret += " Level 2 Weight = {} \n".format("{}".format(self.index_level.weight_list))
-        ret += " Final Result = {} \n".format(final_result_calc(self.final_weight))
+        def format_matrix(m: List[List[List[RelationNode]]]) -> str:
+            _ff = ""
+            for matrix in m:
+                _f = []
+                for i in range(len(matrix)):
+                    _line = []
+                    for j in range(len(matrix)):
+                        _line.append("[{:.4f},{:.4f}]".format(matrix[i][j].membership, matrix[i][j].non_membership))
+                    _f.append(" ".join(_line))
+                _ff += "\n".join(_f) + "\n--------------------------\n"
+            return _ff
+
+        ret = "======{}====== \n".format(self.case_name)
+        ret += "Level 0 weight = {} \n".format("{}".format(self.final_weight))
+        ret += "Level 1 Origin Matrix = \n{}".format(format_matrix(self.criterion_level.matrix))
+        ret += "Level 1 Refined Matrix = \n{}".format(format_matrix(self.criterion_level.refined_matrix))
+        ret += "Level 1 Weight = {} \n".format("{}".format(self.criterion_level.weight_list))
+        ret += "Level 2 Origin Matrix = \n{}".format(format_matrix(self.index_level.matrix))
+        ret += "Level 2 Refined Matrix = \n{}".format(format_matrix(self.index_level.refined_matrix))
+        ret += "Level 2 Weight = {} \n".format("{}".format(self.index_level.weight_list))
+        ret += "Final Result = {} \n".format(final_result_calc(self.final_weight))
 
         return ret

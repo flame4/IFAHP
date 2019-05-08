@@ -19,6 +19,8 @@ class Node:
     good: int
     bad: int
     unknown: int
+    # 表示其在模糊一致性矩阵的当前矩阵内的offset位置
+    group_offset: int
 
     def __init__(self, name, membership=0.5, non_membership=0.3, hesitation=0.2):
         # 隶属度, 非隶属度, 犹豫度.
@@ -29,6 +31,7 @@ class Node:
         self.good = 0
         self.bad = 0
         self.unknown = 0
+        self.group_offset = 0
 
     def __repr__(self) -> str:
         return "{}: ({:.4f} {:.4f} {:.4f})".format(self.name, self.membership, self.non_membership, self.hesitation)
@@ -159,8 +162,10 @@ class BaseLevelMatrix:
             # TODO 目前要求数据的传入是按照index卡着来的, 对异常数据处理不足.
             if len(self.groups) > group_id:
                 self.groups[group_id].append(len(self.nodes) - 1)
+                node.group_offset = len(self.groups[group_id])
             else:
                 self.groups.append([len(self.nodes) - 1])
+                node.group_offset = 1
         return True
 
     # 拟合该层直到符合一致性矩阵判断标准.

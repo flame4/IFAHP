@@ -12,7 +12,7 @@ def main():
                 raise RuntimeError("Framework build Fail!")
             print(f)
         except Exception as e:
-            print(e.__repr__() + ", Init Bad!")
+            print(e.__repr__() + ", Init Failed!")
             break
 
 
